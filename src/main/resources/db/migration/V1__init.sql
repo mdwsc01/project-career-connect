@@ -1,0 +1,4 @@
+CREATE TABLE app_info (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    version VARCHAR(20) NOT NULL
+);
