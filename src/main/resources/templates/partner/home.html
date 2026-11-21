@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Trang đối tác - Career Connect</title>
+</head>
+<body>
+<section>
+    <h1 class="h3 fw-bold mb-1">Trang chủ đối tác</h1>
+    <p class="text-muted mb-4">Tìm kiếm và kết nối với ứng viên phù hợp.</p>
+    <div class="row g-3">
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/partner/search}">
+            <div class="card-body"><h2 class="h5">Tìm ứng viên</h2>
+                <p class="text-muted mb-0">Lọc hồ sơ theo kỹ năng, kinh nghiệm, địa điểm.</p></div>
+        </a></div>
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/partner/shortlist}">
+            <div class="card-body"><h2 class="h5">Shortlist</h2>
+                <p class="text-muted mb-0">Danh sách ứng viên công ty đã lưu.</p></div>
+        </a></div>
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/partner/interviews}">
+            <div class="card-body"><h2 class="h5">Yêu cầu phỏng vấn</h2>
+                <p class="text-muted mb-0">Theo dõi các lời mời đã gửi.</p></div>
+        </a></div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Trang quản trị - Career Connect</title>
+</head>
+<body>
+<section>
+    <h1 class="h3 fw-bold mb-1">Trang chủ quản trị</h1>
+    <p class="text-muted mb-4">Duyệt hồ sơ và quản lý tài khoản người dùng.</p>
+    <div class="row g-3">
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/admin/reviews}">
+            <div class="card-body"><h2 class="h5">Hàng chờ duyệt</h2>
+                <p class="text-muted mb-0">Duyệt hồ sơ sinh viên đang chờ.</p></div>
+        </a></div>
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/admin/users}">
+            <div class="card-body"><h2 class="h5">Quản trị tài khoản</h2>
+                <p class="text-muted mb-0">Tìm, khoá và mở khoá tài khoản.</p></div>
+        </a></div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,55 +1,57 @@
 package com.minhduc.careerconnect.config;
 
-import javax.sql.DataSource;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Cấu hình bảo mật (task T4E7964).
+ * CSRF được bật mặc định cho mọi form POST (không gọi csrf().disable());
+ * form Thymeleaf dùng th:action sẽ tự chèn CSRF token.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final int REMEMBER_ME_SECONDS = 14 * 24 * 60 * 60; // 14 ngày
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   UserDetailsService userDetailsService,
+                                                   RoleBasedSuccessHandler successHandler,
+                                                   LoginFailureHandler failureHandler,
+                                                   @Value("${app.security.remember-me-key}") String rememberMeKey)
+            throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/error").permitAll()
-                .requestMatchers("/candidate/**").hasRole("CANDIDATE")
-                .requestMatchers("/employer/**").hasRole("EMPLOYER")
-                .requestMatchers("/admin/users/**").hasRole("ADMIN")
-                .requestMatchers("/admin/**").hasAnyRole("MENTOR", "ADMIN")
+                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/partner/**").hasRole("PARTNER")
+                .requestMatchers("/me/**").hasRole("STUDENT")
                 .anyRequest().authenticated())
-            // Tạm dùng trang đăng nhập mặc định của Spring; task đăng nhập sẽ thay bằng trang riêng
             .formLogin(form -> form
-                .defaultSuccessUrl("/", true)
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
                 .permitAll())
+            .rememberMe(remember -> remember
+                .key(rememberMeKey)
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(REMEMBER_ME_SECONDS)
+                .userDetailsService(userDetailsService))
             .logout(logout -> logout
-                .logoutSuccessUrl("/?logout")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me")
                 .permitAll());
         return http.build();
-    }
-
-    /** Đọc tài khoản từ bảng users: đăng nhập bằng email, vai trò -> ROLE_xxx, bị khoá thì không đăng nhập được. */
-    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource) {
-        JdbcDaoImpl service = new JdbcDaoImpl();
-        service.setDataSource(dataSource);
-        service.setUsersByUsernameQuery(
-                "SELECT email, password_hash, NOT is_locked FROM users WHERE email = ?");
-        service.setAuthoritiesByUsernameQuery(
-                "SELECT email, CONCAT('ROLE_', role) FROM users WHERE email = ?");
-        return service;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

@@ -11,3 +11,8 @@ server:
     include-message: never
     include-exception: false
     include-binding-errors: never
+
+app:
+  security:
+    # Khoá ký cookie "ghi nhớ đăng nhập". Môi trường thật phải đặt biến REMEMBER_ME_KEY.
+    remember-me-key: ${REMEMBER_ME_KEY:dev-only-remember-me-key-doi-khi-trien-khai}

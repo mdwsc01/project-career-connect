@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Trang sinh viên - Career Connect</title>
+</head>
+<body>
+<section>
+    <h1 class="h3 fw-bold mb-1">Trang chủ sinh viên</h1>
+    <p class="text-muted mb-4">Quản lý hồ sơ năng lực và lời mời phỏng vấn của bạn.</p>
+    <div class="row g-3">
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/me/profile}">
+            <div class="card-body"><h2 class="h5">Hồ sơ của tôi</h2>
+                <p class="text-muted mb-0">Cập nhật học vấn, kỹ năng, dự án, chứng chỉ và gửi duyệt.</p></div>
+        </a></div>
+        <div class="col-md-4"><a class="card h-100 text-decoration-none" th:href="@{/me/interviews}">
+            <div class="card-body"><h2 class="h5">Lời mời phỏng vấn</h2>
+                <p class="text-muted mb-0">Xem và phản hồi lời mời từ đối tác.</p></div>
+        </a></div>
+    </div>
+</section>
+</body>
+</html>

@@ -27,12 +27,11 @@ Mật khẩu chung cho mọi tài khoản: `Demo@1234`
 
 | Vai trò | Email | Ghi chú |
 | --- | --- | --- |
-| Quản trị viên | admin@careerconnect.example.com | Duyệt hồ sơ, quản lý tài khoản |
-| Nhà tuyển dụng | doitac1@example.com | Công ty TNHH Phần mềm Bình Minh (demo) |
-| Nhà tuyển dụng | doitac2@example.com | Công ty CP Dữ liệu Sông Xanh (demo) |
-| Nhà tuyển dụng | doitac3@example.com | Công ty TNHH Giải pháp Hải Đăng (demo) |
-| Sinh viên | sv01@example.com ... sv15@example.com | sv01–sv11: đã duyệt, công khai · sv12–sv14: chờ duyệt · sv15: nháp |
-
-> Các tài khoản này dùng được khi chức năng đăng nhập (đọc tài khoản từ bảng `users`) được hoàn thành.
+| ADMIN | admin@careerconnect.example.com | Trang chủ /admin |
+| PARTNER | doitac1@example.com | Công ty TNHH Phần mềm Bình Minh (demo) |
+| PARTNER | doitac2@example.com | Công ty CP Dữ liệu Sông Xanh (demo) |
+| PARTNER | doitac3@example.com | Công ty TNHH Giải pháp Hải Đăng (demo) |
+| STUDENT | sv01@example.com ... sv15@example.com | sv01–sv11: đã duyệt, công khai · sv12–sv14: chờ duyệt · sv15: nháp |
+| STUDENT (bị khoá) | sv.bikhoa@example.com | Dùng để thử đăng nhập tài khoản bị khoá |
 
 Muốn tạo lại dữ liệu từ đầu: xoá database `career_connect_db` rồi chạy lại ứng dụng.
