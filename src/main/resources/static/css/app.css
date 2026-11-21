@@ -1,4 +1,4 @@
-/* CSS dùng chung, bổ sung cho Bootstrap (task T4E7962) */
+/* CSS dùng chung, bổ sung cho Bootstrap */
 .brand-logo {
     display: inline-flex;
     align-items: center;
@@ -10,4 +10,15 @@
     color: var(--bs-primary);
     font-size: 0.9rem;
     font-weight: 800;
+}
+
+/* Trang lỗi 403/404/500 (task T4E7963) */
+.error-page {
+    max-width: 560px;
+}
+.error-code {
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 1rem;
 }
