@@ -2,6 +2,7 @@ package com.minhduc.careerconnect.controller;
 
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,8 +28,13 @@ public class GlobalModelAdvice {
         if (auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             return null;
         }
-        List<String> names = jdbcTemplate.queryForList(
-                "SELECT full_name FROM users WHERE email = ?", String.class, auth.getName());
-        return names.isEmpty() ? auth.getName() : names.get(0);
+        try {
+            List<String> names = jdbcTemplate.queryForList(
+                    "SELECT full_name FROM users WHERE email = ?", String.class, auth.getName());
+            return names.isEmpty() ? auth.getName() : names.get(0);
+        } catch (DataAccessException ex) {
+            // Không để lỗi DB làm hỏng luôn trang lỗi; hiện email thay cho họ tên
+            return auth.getName();
+        }
     }
 }
