@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
 <head>
-    <meta charset="UTF-8">
-    <title>Career Connect</title>
+    <title>Trang chủ - Career Connect</title>
 </head>
 <body>
-    <h1>Career Connect - Trang chủ</h1>
+<section>
+    <div class="p-5 mb-4 bg-white rounded-3 border">
+        <h1 class="display-6 fw-bold">Career Connect</h1>
+        <p class="lead">Nơi sinh viên xây dựng hồ sơ năng lực và doanh nghiệp tìm được ứng viên phù hợp.</p>
+
+        <div sec:authorize="isAnonymous()" class="d-flex gap-2">
+            <a class="btn btn-primary" th:href="@{/register}">Tạo hồ sơ ngay</a>
+            <a class="btn btn-outline-primary" th:href="@{/login}">Đăng nhập</a>
+        </div>
+
+        <p sec:authorize="isAuthenticated()" class="mb-0">
+            Xin chào <strong th:text="${currentUserFullName != null ? currentUserFullName : #authentication.name}">bạn</strong>,
+            hãy chọn chức năng trên thanh menu.
+        </p>
+    </div>
+</section>
 </body>
 </html>
