@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Đăng nhập - Career Connect</title>
+</head>
+<body>
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold text-center mb-1">Đăng nhập</h1>
+                    <p class="text-muted text-center mb-4">Chào mừng bạn quay lại Career Connect</p>
+
+                    <div th:if="${loginError != null}" class="alert alert-danger" role="alert"
+                         th:text="${loginError}">Email hoặc mật khẩu không đúng.
+                    </div>
+
+                    <!-- th:action tự chèn CSRF token -->
+                    <form th:action="@{/login}" method="post" novalidate>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   placeholder="ban@example.com" required autofocus>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mật khẩu</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me">
+                            <label class="form-check-label" for="remember-me">Ghi nhớ đăng nhập (14 ngày)</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+                    </form>
+
+                    <p class="text-center mt-3 mb-0">
+                        Chưa có tài khoản? <a th:href="@{/register}">Đăng ký</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

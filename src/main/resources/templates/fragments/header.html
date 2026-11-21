@@ -19,22 +19,19 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <!-- Menu theo vai trò -->
                 <ul class="navbar-nav me-auto">
-                    <th:block sec:authorize="hasRole('CANDIDATE')">
-                        <li class="nav-item"><a class="nav-link" th:href="@{/candidate/profile}">Hồ sơ của tôi</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/candidate/interviews}">Lời mời phỏng vấn</a></li>
+                    <th:block sec:authorize="hasRole('STUDENT')">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/me/profile}">Hồ sơ của tôi</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/me/interviews}">Lời mời phỏng vấn</a></li>
                     </th:block>
 
-                    <th:block sec:authorize="hasRole('EMPLOYER')">
-                        <li class="nav-item"><a class="nav-link" th:href="@{/employer/search}">Tìm ứng viên</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/employer/shortlist}">Shortlist</a></li>
-                        <li class="nav-item"><a class="nav-link" th:href="@{/employer/interviews}">Yêu cầu phỏng vấn</a></li>
-                    </th:block>
-
-                    <th:block sec:authorize="hasAnyRole('MENTOR', 'ADMIN')">
-                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/reviews}">Hàng chờ duyệt</a></li>
+                    <th:block sec:authorize="hasRole('PARTNER')">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/partner/search}">Tìm ứng viên</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/partner/shortlist}">Shortlist</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/partner/interviews}">Yêu cầu phỏng vấn</a></li>
                     </th:block>
 
                     <th:block sec:authorize="hasRole('ADMIN')">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/admin/reviews}">Hàng chờ duyệt</a></li>
                         <li class="nav-item"><a class="nav-link" th:href="@{/admin/users}">Quản trị tài khoản</a></li>
                     </th:block>
                 </ul>
@@ -49,9 +46,8 @@
                 <div class="d-flex align-items-center gap-2" sec:authorize="isAuthenticated()">
                     <span class="navbar-text text-white fw-semibold"
                           th:text="${currentUserFullName != null ? currentUserFullName : #authentication.name}">Tên người dùng</span>
-                    <span class="badge text-bg-light" sec:authorize="hasRole('CANDIDATE')">Ứng viên</span>
-                    <span class="badge text-bg-light" sec:authorize="hasRole('EMPLOYER')">Nhà tuyển dụng</span>
-                    <span class="badge text-bg-light" sec:authorize="hasRole('MENTOR')">Mentor</span>
+                    <span class="badge text-bg-light" sec:authorize="hasRole('STUDENT')">Sinh viên</span>
+                    <span class="badge text-bg-light" sec:authorize="hasRole('PARTNER')">Đối tác</span>
                     <span class="badge text-bg-light" sec:authorize="hasRole('ADMIN')">Quản trị viên</span>
                     <!-- Đăng xuất phải dùng POST; th:action tự thêm CSRF token -->
                     <form th:action="@{/logout}" method="post" class="m-0">
