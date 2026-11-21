@@ -49,6 +49,7 @@
                     <span class="badge text-bg-light" sec:authorize="hasRole('STUDENT')">Sinh viên</span>
                     <span class="badge text-bg-light" sec:authorize="hasRole('PARTNER')">Đối tác</span>
                     <span class="badge text-bg-light" sec:authorize="hasRole('ADMIN')">Quản trị viên</span>
+                    <a class="btn btn-outline-light btn-sm" th:href="@{/account/password}">Đổi mật khẩu</a>
                     <!-- Đăng xuất phải dùng POST; th:action tự thêm CSRF token -->
                     <form th:action="@{/logout}" method="post" class="m-0">
                         <button type="submit" class="btn btn-outline-light btn-sm">Đăng xuất</button>

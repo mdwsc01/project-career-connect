@@ -2,6 +2,8 @@ package com.minhduc.careerconnect.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -10,6 +12,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
+
+    /** Thông tin tối thiểu để kiểm tra mật khẩu. */
+    public record UserCredential(long id, String email, String passwordHash) {
+    }
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -23,9 +29,15 @@ public class UserRepository {
         return count != null && count > 0;
     }
 
-    /**
-     * Thêm tài khoản mới, trả về id vừa tạo.
-     */
+    public Optional<UserCredential> findCredentialByEmail(String email) {
+        List<UserCredential> rows = jdbcTemplate.query(
+                "SELECT id, email, password_hash FROM users WHERE email = ?",
+                (rs, i) -> new UserCredential(rs.getLong("id"), rs.getString("email"), rs.getString("password_hash")),
+                email);
+        return rows.stream().findFirst();
+    }
+
+    /** Thêm tài khoản mới, trả về id vừa tạo. */
     public long insert(String email, String passwordHash, String fullName, String role) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -39,5 +51,9 @@ public class UserRepository {
             return ps;
         }, keyHolder);
         return keyHolder.getKey().longValue();
+    }
+
+    public void updatePassword(long userId, String passwordHash) {
+        jdbcTemplate.update("UPDATE users SET password_hash = ? WHERE id = ?", passwordHash, userId);
     }
 }

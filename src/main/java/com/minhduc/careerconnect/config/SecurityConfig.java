@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Cấu hình bảo mật (task T4E7964).
+ * Cấu hình bảo mật.
  * CSRF được bật mặc định cho mọi form POST (không gọi csrf().disable());
  * form Thymeleaf dùng th:action sẽ tự chèn CSRF token.
  */
@@ -28,7 +28,8 @@ public class SecurityConfig {
             throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error").permitAll()
+                .requestMatchers("/", "/login", "/register", "/forgot-password", "/reset-password",
+                        "/css/**", "/js/**", "/images/**", "/error").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/partner/**").hasRole("PARTNER")
                 .requestMatchers("/me/**").hasRole("STUDENT")
