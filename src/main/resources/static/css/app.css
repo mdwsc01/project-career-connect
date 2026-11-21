@@ -1,0 +1,13 @@
+/* CSS dùng chung, bổ sung cho Bootstrap (task T4E7962) */
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--bs-primary);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
