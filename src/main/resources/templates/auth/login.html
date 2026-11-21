@@ -25,7 +25,10 @@
                                    placeholder="ban@example.com" required autofocus>
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Mật khẩu</label>
+                            <div class="d-flex justify-content-between">
+                                <label for="password" class="form-label">Mật khẩu</label>
+                                <a class="small" th:href="@{/forgot-password}">Quên mật khẩu?</a>
+                            </div>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="form-check mb-3">
