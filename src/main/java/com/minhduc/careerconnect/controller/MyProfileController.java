@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minhduc.careerconnect.dto.MyProfileForm;
+import com.minhduc.careerconnect.service.EducationService;
 import com.minhduc.careerconnect.service.MyProfileService;
 
 /** Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình. */
@@ -26,14 +27,17 @@ public class MyProfileController {
     private static final LocalDate MIN_DATE = LocalDate.of(1950, 1, 1);
 
     private final MyProfileService myProfileService;
+    private final EducationService educationService;
 
-    public MyProfileController(MyProfileService myProfileService) {
+    public MyProfileController(MyProfileService myProfileService, EducationService educationService) {
         this.myProfileService = myProfileService;
+        this.educationService = educationService;
     }
 
     @GetMapping
     public String view(Principal principal, Model model) {
         model.addAttribute("profile", myProfileService.getMyProfile(principal.getName()));
+        model.addAttribute("educations", educationService.getMyEducations(principal.getName()));
         return "me/profile";
     }
 
