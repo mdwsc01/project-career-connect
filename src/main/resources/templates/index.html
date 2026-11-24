@@ -17,7 +17,8 @@
         </div>
 
         <p sec:authorize="isAuthenticated()" class="mb-0">
-            Xin chào <strong th:text="${currentUserFullName != null ? currentUserFullName : #authentication.name}">bạn</strong>,
+            Xin chào <strong
+                th:text="${currentUserFullName != null ? currentUserFullName : #authentication.name}">bạn</strong>,
             hãy chọn chức năng trên thanh menu.
         </p>
     </div>

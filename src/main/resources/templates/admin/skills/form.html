@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Kỹ năng - Career Connect</title>
+</head>
+<body>
+<section>
+    <a th:href="@{/admin/skills}" class="d-inline-block mb-3">&laquo; Quay lại danh mục kỹ năng</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold mb-4" th:text="${skillId == null} ? 'Thêm kỹ năng' : 'Sửa kỹ năng'">Thêm kỹ
+                        năng</h1>
+
+                    <!-- Cùng một form cho thêm và sửa; th:action tự chèn CSRF token -->
+                    <form th:action="${skillId == null} ? @{/admin/skills/new} : @{/admin/skills/{id}/edit(id=${skillId})}"
+                          th:object="${form}" method="post" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tên kỹ năng <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" maxlength="100" autofocus
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                   placeholder="VD: Spring Boot">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Lỗi
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="category" class="form-label">Nhóm <span class="text-danger">*</span></label>
+                            <select class="form-select" th:field="*{category}"
+                                    th:classappend="${#fields.hasErrors('category')} ? 'is-invalid'">
+                                <option value="">-- Chọn nhóm --</option>
+                                <option th:each="c : ${categories}" th:value="${c}" th:text="${c.label}">Nhóm</option>
+                            </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('category')}"
+                                 th:errors="*{category}">Lỗi
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a class="btn btn-outline-secondary" th:href="@{/admin/skills}">Huỷ</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

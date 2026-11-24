@@ -17,36 +17,55 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Họ tên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" th:field="*{fullName}" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'" maxlength="100">
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Lỗi</div>
+                            <input type="text" class="form-control" th:field="*{fullName}"
+                                   th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'" maxlength="100">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('fullName')}"
+                                 th:errors="*{fullName}">Lỗi
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
                             <label for="dateOfBirth" class="form-label">Ngày sinh</label>
-                            <input type="date" class="form-control" th:field="*{dateOfBirth}" th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid'" >
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Lỗi</div>
+                            <input type="date" class="form-control" th:field="*{dateOfBirth}"
+                                   th:classappend="${#fields.hasErrors('dateOfBirth')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('dateOfBirth')}"
+                                 th:errors="*{dateOfBirth}">Lỗi
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
                             <label for="phone" class="form-label">Số điện thoại</label>
-                            <input type="tel" class="form-control" th:field="*{phone}" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'" placeholder="0912345678">
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Lỗi</div>
+                            <input type="tel" class="form-control" th:field="*{phone}"
+                                   th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                                   placeholder="0912345678">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+                                Lỗi
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="desiredPosition" class="form-label">Vị trí mong muốn <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" th:field="*{desiredPosition}" th:classappend="${#fields.hasErrors('desiredPosition')} ? 'is-invalid'" placeholder="VD: Backend Developer" maxlength="150">
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('desiredPosition')}" th:errors="*{desiredPosition}">Lỗi</div>
+                            <label for="desiredPosition" class="form-label">Vị trí mong muốn <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{desiredPosition}"
+                                   th:classappend="${#fields.hasErrors('desiredPosition')} ? 'is-invalid'"
+                                   placeholder="VD: Backend Developer" maxlength="150">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('desiredPosition')}"
+                                 th:errors="*{desiredPosition}">Lỗi
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label for="desiredWorkLocation" class="form-label">Nơi làm việc mong muốn</label>
-                            <input type="text" class="form-control" th:field="*{desiredWorkLocation}" th:classappend="${#fields.hasErrors('desiredWorkLocation')} ? 'is-invalid'" placeholder="VD: Hà Nội, làm từ xa" maxlength="100">
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('desiredWorkLocation')}" th:errors="*{desiredWorkLocation}">Lỗi</div>
+                            <input type="text" class="form-control" th:field="*{desiredWorkLocation}"
+                                   th:classappend="${#fields.hasErrors('desiredWorkLocation')} ? 'is-invalid'"
+                                   placeholder="VD: Hà Nội, làm từ xa" maxlength="100">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('desiredWorkLocation')}"
+                                 th:errors="*{desiredWorkLocation}">Lỗi
+                            </div>
                         </div>
                     </div>
                     <div class="col-12">
@@ -55,7 +74,9 @@
                             <textarea class="form-control" rows="5" th:field="*{summary}" maxlength="2000"
                                       th:classappend="${#fields.hasErrors('summary')} ? 'is-invalid'"
                                       placeholder="Mục tiêu nghề nghiệp, điểm mạnh, kinh nghiệm nổi bật..."></textarea>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}">Lỗi</div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('summary')}"
+                                 th:errors="*{summary}">Lỗi
+                            </div>
                         </div>
                     </div>
                 </div>
