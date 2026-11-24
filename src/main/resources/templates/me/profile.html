@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Hồ sơ của tôi - Career Connect</title>
+</head>
+<body>
+<section>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h3 fw-bold mb-0">Hồ sơ của tôi</h1>
+        <a class="btn btn-primary" th:href="@{/me/profile/edit}">Sửa hồ sơ</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <h2 class="h4 mb-0" th:text="${profile.fullName()}">Nguyễn Văn An</h2>
+                <th:block th:switch="${profile.status()}">
+                    <span th:case="'DRAFT'" class="badge text-bg-secondary">Nháp</span>
+                    <span th:case="'PENDING'" class="badge text-bg-warning">Chờ duyệt</span>
+                    <span th:case="'APPROVED'" class="badge text-bg-success">Đã duyệt</span>
+                    <span th:case="'REJECTED'" class="badge text-bg-danger">Bị từ chối</span>
+                </th:block>
+                <span class="badge text-bg-light border"
+                      th:text="${profile.isPublic()} ? 'Công khai' : 'Riêng tư'">Riêng tư</span>
+            </div>
+
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted fw-normal">Email</dt>
+                <dd class="col-sm-8" th:text="${profile.email()}">an@example.com</dd>
+
+                <dt class="col-sm-4 text-muted fw-normal">Ngày sinh</dt>
+                <dd class="col-sm-8"
+                    th:text="${profile.dateOfBirth() != null ? #temporals.format(profile.dateOfBirth(), 'dd/MM/yyyy') : 'Chưa cập nhật'}">01/01/2004</dd>
+
+                <dt class="col-sm-4 text-muted fw-normal">Số điện thoại</dt>
+                <dd class="col-sm-8" th:text="${profile.phone() != null ? profile.phone() : 'Chưa cập nhật'}">0912345678</dd>
+
+                <dt class="col-sm-4 text-muted fw-normal">Vị trí mong muốn</dt>
+                <dd class="col-sm-8" th:text="${profile.desiredPosition() != null ? profile.desiredPosition() : 'Chưa cập nhật'}">Backend Developer</dd>
+
+                <dt class="col-sm-4 text-muted fw-normal">Nơi làm việc mong muốn</dt>
+                <dd class="col-sm-8" th:text="${profile.desiredWorkLocation() != null ? profile.desiredWorkLocation() : 'Chưa cập nhật'}">Hà Nội</dd>
+
+                <dt class="col-sm-4 text-muted fw-normal">Giới thiệu bản thân</dt>
+                <dd class="col-sm-8 mb-0 text-prewrap"
+                    th:text="${profile.summary() != null ? profile.summary() : 'Chưa cập nhật'}">...</dd>
+            </dl>
+        </div>
+    </div>
+</section>
+</body>
+</html>

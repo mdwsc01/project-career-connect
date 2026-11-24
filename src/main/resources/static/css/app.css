@@ -22,3 +22,8 @@
     line-height: 1;
     margin-bottom: 1rem;
 }
+
+/* Giữ xuống dòng của đoạn văn người dùng nhập (task T4E7968) */
+.text-prewrap {
+    white-space: pre-line;
+}
