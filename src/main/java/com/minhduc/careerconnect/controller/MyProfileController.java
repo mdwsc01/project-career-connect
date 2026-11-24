@@ -1,0 +1,70 @@
+package com.minhduc.careerconnect.controller;
+
+import java.security.Principal;
+import java.time.LocalDate;
+
+import jakarta.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.minhduc.careerconnect.dto.MyProfileForm;
+import com.minhduc.careerconnect.service.MyProfileService;
+
+/** Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình. */
+@Controller
+@RequestMapping("/me/profile")
+public class MyProfileController {
+
+    private static final int MIN_AGE = 15;
+    private static final LocalDate MIN_DATE = LocalDate.of(1950, 1, 1);
+
+    private final MyProfileService myProfileService;
+
+    public MyProfileController(MyProfileService myProfileService) {
+        this.myProfileService = myProfileService;
+    }
+
+    @GetMapping
+    public String view(Principal principal, Model model) {
+        model.addAttribute("profile", myProfileService.getMyProfile(principal.getName()));
+        return "me/profile";
+    }
+
+    @GetMapping("/edit")
+    public String editForm(Principal principal, Model model) {
+        model.addAttribute("form", myProfileService.toForm(myProfileService.getMyProfile(principal.getName())));
+        return "me/profile-edit";
+    }
+
+    @PostMapping("/edit")
+    public String update(@Valid @ModelAttribute("form") MyProfileForm form, BindingResult bindingResult,
+                         Principal principal, RedirectAttributes redirectAttributes) {
+        validateBirthDateRange(form, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "me/profile-edit"; // lỗi hiện dưới từng ô, dữ liệu đã nhập được giữ lại
+        }
+        myProfileService.update(principal.getName(), form);
+        redirectAttributes.addFlashAttribute("successMessage", "Đã lưu hồ sơ.");
+        return "redirect:/me/profile";
+    }
+
+    /** Ngoài @Past: không trước 1950 và đủ 15 tuổi. */
+    private void validateBirthDateRange(MyProfileForm form, BindingResult bindingResult) {
+        LocalDate dob = form.getDateOfBirth();
+        if (dob == null || bindingResult.hasFieldErrors("dateOfBirth")) {
+            return;
+        }
+        if (dob.isBefore(MIN_DATE)) {
+            bindingResult.rejectValue("dateOfBirth", "range", "Ngày sinh không hợp lệ (phải từ năm 1950 trở đi)");
+        } else if (dob.isAfter(LocalDate.now().minusYears(MIN_AGE))) {
+            bindingResult.rejectValue("dateOfBirth", "range", "Bạn phải từ " + MIN_AGE + " tuổi trở lên");
+        }
+    }
+}
