@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Danh mục kỹ năng - Career Connect</title>
+</head>
+<body>
+<section>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <div>
+            <h1 class="h3 fw-bold mb-0">Danh mục kỹ năng</h1>
+            <p class="text-muted mb-0"><strong th:text="${skills.size()}">0</strong> kỹ năng</p>
+        </div>
+        <a class="btn btn-primary" th:href="@{/admin/skills/new}">+ Thêm kỹ năng</a>
+    </div>
+
+    <form class="card card-body mb-3" th:action="@{/admin/skills}" method="get">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label for="q" class="form-label small mb-1">Tìm theo tên</label>
+                <input type="text" class="form-control" id="q" name="q" th:value="${q}" placeholder="VD: java">
+            </div>
+            <div class="col-md-3">
+                <label for="category" class="form-label small mb-1">Nhóm</label>
+                <select class="form-select" id="category" name="category">
+                    <option value="">Tất cả</option>
+                    <option th:each="c : ${categories}" th:value="${c}" th:text="${c.label}"
+                            th:selected="${c == category}">Nhóm
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="visibility" class="form-label small mb-1">Trạng thái</label>
+                <select class="form-select" id="visibility" name="visibility">
+                    <option value="">Tất cả</option>
+                    <option value="SHOWN" th:selected="${visibility == 'SHOWN'}">Đang hiện</option>
+                    <option value="HIDDEN" th:selected="${visibility == 'HIDDEN'}">Đã ẩn</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-outline-primary flex-fill">Lọc</button>
+                <a class="btn btn-outline-secondary" th:href="@{/admin/skills}">Xoá</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Tên kỹ năng</th>
+                    <th>Nhóm</th>
+                    <th class="text-center">Số sinh viên dùng</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${skills.isEmpty()}">
+                    <td colspan="5" class="text-center text-muted py-4">Không có kỹ năng nào phù hợp.</td>
+                </tr>
+                <tr th:each="s : ${skills}" th:classappend="${s.hidden()} ? 'text-muted'">
+                    <td class="fw-semibold" th:text="${s.name()}">Java</td>
+                    <td><span class="badge text-bg-light border" th:text="${s.category().label}">Ngôn ngữ</span></td>
+                    <td class="text-center" th:text="${s.usageCount()}">0</td>
+                    <td>
+                        <span th:unless="${s.hidden()}" class="badge text-bg-success">Đang hiện</span>
+                        <span th:if="${s.hidden()}" class="badge text-bg-secondary">Đã ẩn</span>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-inline-flex gap-1">
+                            <a class="btn btn-sm btn-outline-secondary"
+                               th:href="@{/admin/skills/{id}/edit(id=${s.id()})}">Sửa</a>
+
+                            <form th:unless="${s.hidden()}" th:action="@{/admin/skills/{id}/hide(id=${s.id()})}"
+                                  method="post" class="m-0">
+                                <button type="submit" class="btn btn-sm btn-outline-warning">Ẩn</button>
+                            </form>
+                            <form th:if="${s.hidden()}" th:action="@{/admin/skills/{id}/show(id=${s.id()})}"
+                                  method="post" class="m-0">
+                                <button type="submit" class="btn btn-sm btn-outline-success">Hiện</button>
+                            </form>
+
+                            <!-- Chỉ xoá được khi chưa có sinh viên dùng -->
+                            <button th:if="${s.usageCount() == 0}" type="button" class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal" th:attr="data-bs-target='#deleteSkill' + ${s.id()}">Xoá
+                            </button>
+                            <button th:unless="${s.usageCount() == 0}" type="button"
+                                    class="btn btn-sm btn-outline-danger" disabled
+                                    title="Đã có sinh viên dùng, chỉ có thể ẩn">Xoá
+                            </button>
+                        </div>
+
+                        <div th:if="${s.usageCount() == 0}" class="modal fade text-start text-wrap"
+                             th:id="'deleteSkill' + ${s.id()}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form class="modal-content" th:action="@{/admin/skills/{id}/delete(id=${s.id()})}"
+                                      method="post">
+                                    <div class="modal-header">
+                                        <h2 class="modal-title h5">Xoá kỹ năng</h2>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Đóng"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Xoá hẳn kỹ năng <strong th:text="${s.name()}">tên</strong> khỏi danh mục? Thao
+                                        tác này không thể hoàn tác.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ
+                                        </button>
+                                        <button type="submit" class="btn btn-danger">Xoá</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p class="small text-muted mt-2 mb-0">
+        Kỹ năng đã có sinh viên dùng không thể xoá, chỉ có thể ẩn. Kỹ năng bị ẩn không cho chọn mới,
+        sinh viên đang dùng vẫn giữ nguyên.
+    </p>
+</section>
+</body>
+</html>
