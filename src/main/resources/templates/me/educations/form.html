@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Học vấn - Career Connect</title>
+</head>
+<body>
+<section>
+    <a th:href="@{/me/profile#hoc-van}" class="d-inline-block mb-3">&laquo; Quay lại hồ sơ</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold mb-4" th:text="${educationId == null} ? 'Thêm học vấn' : 'Sửa học vấn'">Thêm học vấn</h1>
+
+                    <!-- Cùng một form cho thêm và sửa; th:action tự chèn CSRF token -->
+                    <form th:action="${educationId == null} ? @{/me/educations/new} : @{/me/educations/{id}/edit(id=${educationId})}"
+                          th:object="${form}" method="post" novalidate>
+                        <div class="row">
+                            <div class="col-12">
+                        <div class="mb-3">
+                            <label for="school" class="form-label">Trường <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{school}" th:classappend="${#fields.hasErrors('school')} ? 'is-invalid'" maxlength="200" placeholder="VD: Trường Đại học ABC" autofocus>
+                            <div class="form-text" th:unless="${#fields.hasErrors('school')}"></div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('school')}" th:errors="*{school}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-12">
+                        <div class="mb-3">
+                            <label for="major" class="form-label">Chuyên ngành <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{major}" th:classappend="${#fields.hasErrors('major')} ? 'is-invalid'" maxlength="150" placeholder="VD: Công nghệ thông tin">
+                            <div class="form-text" th:unless="${#fields.hasErrors('major')}"></div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('major')}" th:errors="*{major}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="startDate" class="form-label">Từ ngày <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" th:field="*{startDate}" th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid'" >
+                            <div class="form-text" th:unless="${#fields.hasErrors('startDate')}"></div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="endDate" class="form-label">Đến ngày</label>
+                            <input type="date" class="form-control" th:field="*{endDate}" th:classappend="${#fields.hasErrors('endDate')} ? 'is-invalid'" >
+                            <div class="form-text" th:unless="${#fields.hasErrors('endDate')}">Để trống nếu đang học</div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="gpa" class="form-label">GPA (thang 4)</label>
+                            <input type="number" class="form-control" th:field="*{gpa}" th:classappend="${#fields.hasErrors('gpa')} ? 'is-invalid'" step="0.01" min="0" max="4" placeholder="VD: 3.25">
+                            <div class="form-text" th:unless="${#fields.hasErrors('gpa')}">Không bắt buộc, từ 0 đến 4</div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('gpa')}" th:errors="*{gpa}">Lỗi</div>
+                        </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a class="btn btn-outline-secondary" th:href="@{/me/profile#hoc-van}">Huỷ</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

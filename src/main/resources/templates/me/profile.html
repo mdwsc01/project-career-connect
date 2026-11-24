@@ -11,7 +11,8 @@
         <a class="btn btn-primary" th:href="@{/me/profile/edit}">Sửa hồ sơ</a>
     </div>
 
-    <div class="card shadow-sm">
+    <!-- Thông tin cơ bản (task T4E7968) -->
+    <div class="card shadow-sm mb-4">
         <div class="card-body p-4">
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                 <h2 class="h4 mb-0" th:text="${profile.fullName()}">Nguyễn Văn An</h2>
@@ -47,6 +48,58 @@
                     th:text="${profile.summary() != null ? profile.summary() : 'Chưa cập nhật'}">...</dd>
             </dl>
         </div>
+    </div>
+
+    <!-- Học vấn (task T4E7969) -->
+    <div class="card shadow-sm mb-4" id="hoc-van">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Học vấn</h2>
+            <a class="btn btn-sm btn-outline-primary" th:href="@{/me/educations/new}">+ Thêm học vấn</a>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-muted py-3" th:if="${educations.isEmpty()}">
+                Chưa có học vấn nào. Hãy thêm quá trình học tập của bạn.
+            </li>
+            <li class="list-group-item py-3" th:each="e : ${educations}">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    <div>
+                        <div class="fw-semibold" th:text="${e.school()}">Trường Đại học ABC</div>
+                        <div th:text="${e.major()}">Công nghệ thông tin</div>
+                        <div class="small text-muted">
+                            <span th:text="${#temporals.format(e.startDate(), 'dd/MM/yyyy')}">01/09/2022</span>
+                            –
+                            <span th:text="${e.endDate() != null ? #temporals.format(e.endDate(), 'dd/MM/yyyy') : 'nay'}">nay</span>
+                            <span th:if="${e.gpa() != null}"> · GPA <strong th:text="${e.gpa()}">3.20</strong>/4</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-2">
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/me/educations/{id}/edit(id=${e.id()})}">Sửa</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                th:attr="data-bs-target='#deleteEducation' + ${e.id()}">Xoá</button>
+                    </div>
+                </div>
+
+                <!-- Hộp xác nhận xoá -->
+                <div class="modal fade" th:id="'deleteEducation' + ${e.id()}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form class="modal-content" th:action="@{/me/educations/{id}/delete(id=${e.id()})}" method="post">
+                            <div class="modal-header">
+                                <h3 class="modal-title h5">Xoá học vấn</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                            </div>
+                            <div class="modal-body">
+                                Bạn có chắc muốn xoá học vấn tại <strong th:text="${e.school()}">trường</strong>?
+                                Thao tác này không thể hoàn tác.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                <button type="submit" class="btn btn-danger">Xoá</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </section>
 </body>
