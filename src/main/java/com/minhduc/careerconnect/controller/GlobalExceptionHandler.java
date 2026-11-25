@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -21,11 +22,12 @@ import com.minhduc.careerconnect.exception.ResourceNotFoundException;
 
 /**
  * Xử lý lỗi toàn cục cho mọi controller (task T4E7963).
- *
+ * <p>
  * - BusinessException          -> quay lại trang trước + thông báo flash màu đỏ
  * - ResourceNotFoundException  -> trang 404
  * - AccessDeniedException      -> trang 403 (chưa đăng nhập thì chuyển tới trang đăng nhập)
- *
+ * - MaxUploadSizeExceededException -> quay lại trang trước + báo file quá lớn (task T4E796D)
+ * <p>
  * Các lỗi còn lại (lỗi hệ thống, URL không tồn tại, lỗi chặn ở tầng Security) do Spring Boot
  * chuyển tới /error và hiển thị bằng templates/error/{mã lỗi}.html, không lộ stack trace.
  */
@@ -64,7 +66,17 @@ public class GlobalExceptionHandler {
         return "error/403";
     }
 
-    /** Chỉ quay lại trang trước nếu trang đó thuộc chính website này, tránh chuyển hướng ra ngoài. */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public String handleMaxUpload(MaxUploadSizeExceededException ex, HttpServletRequest request,
+                                  RedirectAttributes redirectAttributes) {
+        log.warn("File tải lên quá lớn tại {}", request.getRequestURI());
+        redirectAttributes.addFlashAttribute("errorMessage", "File tải lên quá lớn. Chỉ nhận file tối đa 5MB.");
+        return "redirect:" + safeRefererPath(request);
+    }
+
+    /**
+     * Chỉ quay lại trang trước nếu trang đó thuộc chính website này, tránh chuyển hướng ra ngoài.
+     */
     private String safeRefererPath(HttpServletRequest request) {
         String referer = request.getHeader("Referer");
         String base = ServletUriComponentsBuilder.fromCurrentContextPath().toUriString();

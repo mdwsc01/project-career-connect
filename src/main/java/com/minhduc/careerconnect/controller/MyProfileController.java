@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minhduc.careerconnect.dto.MyProfileForm;
 import com.minhduc.careerconnect.dto.SkillLevel;
+import com.minhduc.careerconnect.service.CertificateService;
 import com.minhduc.careerconnect.service.EducationService;
 import com.minhduc.careerconnect.service.MyProfileService;
 import com.minhduc.careerconnect.service.MySkillService;
@@ -35,13 +36,16 @@ public class MyProfileController {
     private final EducationService educationService;
     private final MySkillService mySkillService;
     private final ProjectService projectService;
+    private final CertificateService certificateService;
 
     public MyProfileController(MyProfileService myProfileService, EducationService educationService,
-                               MySkillService mySkillService, ProjectService projectService) {
+                               MySkillService mySkillService, ProjectService projectService,
+                               CertificateService certificateService) {
         this.myProfileService = myProfileService;
         this.educationService = educationService;
         this.mySkillService = mySkillService;
         this.projectService = projectService;
+        this.certificateService = certificateService;
     }
 
     @GetMapping
@@ -52,6 +56,7 @@ public class MyProfileController {
         model.addAttribute("levels", SkillLevel.values());
         model.addAttribute("projects", projectService.getMyProjects(principal.getName()));
         model.addAttribute("maxProjects", ProjectService.MAX_PROJECTS);
+        model.addAttribute("certificates", certificateService.getMyCertificates(principal.getName()));
         return "me/profile";
     }
 

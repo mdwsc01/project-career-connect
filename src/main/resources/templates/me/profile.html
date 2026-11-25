@@ -209,6 +209,67 @@
             </li>
         </ul>
     </div>
+
+    <!-- Chứng chỉ (task T4E796D) -->
+    <div class="card shadow-sm mb-4" id="chung-chi">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Chứng chỉ</h2>
+            <a class="btn btn-sm btn-outline-primary" th:href="@{/me/certificates/new}">+ Thêm chứng chỉ</a>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-muted py-3" th:if="${certificates.isEmpty()}">
+                Chưa có chứng chỉ nào.
+            </li>
+            <li class="list-group-item py-3" th:each="c : ${certificates}">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    <div>
+                        <div class="fw-semibold" th:text="${c.name()}">TOEIC 750</div>
+                        <div class="small text-muted">
+                            <span th:text="${c.issuer()}">IIG</span>
+                            <span th:if="${c.issuedDate() != null}"> · Cấp ngày
+                                <span th:text="${#temporals.format(c.issuedDate(), 'dd/MM/yyyy')}">01/03/2025</span></span>
+                        </div>
+                        <div class="small mt-1" th:if="${c.hasFile()}">
+                            <span class="text-muted" th:text="${c.fileOriginalName()}">file.pdf</span>
+                            <span class="text-muted" th:if="${c.fileSize() != null}"
+                                  th:text="'(' + ${#numbers.formatDecimal(c.fileSize() / 1024.0, 1, 0)} + ' KB)'">(120 KB)</span>
+                            · <a th:href="@{/files/certificates/{id}(id=${c.id()})}" target="_blank"
+                                 rel="noopener noreferrer">Xem &#8599;</a>
+                            · <a th:href="@{/files/certificates/{id}(id=${c.id()}, download=true)}">Tải về</a>
+                        </div>
+                        <div class="small text-muted mt-1" th:unless="${c.hasFile()}">Chưa có file minh chứng</div>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                th:attr="data-bs-target='#deleteCertificate' + ${c.id()}">Xoá
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade" th:id="'deleteCertificate' + ${c.id()}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form class="modal-content" th:action="@{/me/certificates/{id}/delete(id=${c.id()})}"
+                              method="post">
+                            <div class="modal-header">
+                                <h3 class="modal-title h5">Xoá chứng chỉ</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
+                            </div>
+                            <div class="modal-body">
+                                Xoá chứng chỉ <strong th:text="${c.name()}">tên</strong>? File minh chứng cũng sẽ bị
+                                xoá.
+                                Thao tác này không thể hoàn tác.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                <button type="submit" class="btn btn-danger">Xoá</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </section>
 </body>
 </html>

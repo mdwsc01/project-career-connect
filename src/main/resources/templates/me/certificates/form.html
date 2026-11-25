@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Thêm chứng chỉ - Career Connect</title>
+</head>
+<body>
+<section>
+    <a th:href="@{/me/profile#chung-chi}" class="d-inline-block mb-3">&laquo; Quay lại hồ sơ</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold mb-4">Thêm chứng chỉ</h1>
+
+                    <!-- enctype multipart/form-data để gửi được file; th:action tự chèn CSRF token -->
+                    <form th:action="@{/me/certificates/new}" th:object="${form}" method="post"
+                          enctype="multipart/form-data" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tên chứng chỉ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" maxlength="200" autofocus
+                                   placeholder="VD: TOEIC 750" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Lỗi</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="mb-3">
+                                    <label for="issuer" class="form-label">Đơn vị cấp <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" th:field="*{issuer}" maxlength="150"
+                                           placeholder="VD: IIG Việt Nam" th:classappend="${#fields.hasErrors('issuer')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('issuer')}" th:errors="*{issuer}">Lỗi</div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="mb-3">
+                                    <label for="issuedDate" class="form-label">Ngày cấp <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" th:field="*{issuedDate}"
+                                           th:classappend="${#fields.hasErrors('issuedDate')} ? 'is-invalid'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('issuedDate')}" th:errors="*{issuedDate}">Lỗi</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="file" class="form-label">File minh chứng <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="file" name="file"
+                                   accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                                   th:classappend="${fileError != null} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:if="${fileError != null}" th:text="${fileError}">Lỗi file</div>
+                            <div class="form-text">
+                                PDF, JPG hoặc PNG, tối đa <span th:text="${maxSizeMb}">5</span>MB.
+                                <span th:if="${fileError != null or #fields.hasAnyErrors()}">Vui lòng chọn lại file.</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a class="btn btn-outline-secondary" th:href="@{/me/profile#chung-chi}">Huỷ</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
