@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Dự án - Career Connect</title>
+</head>
+<body>
+<section>
+    <a th:href="@{/me/profile#du-an}" class="d-inline-block mb-3">&laquo; Quay lại hồ sơ</a>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 fw-bold mb-4" th:text="${projectId == null} ? 'Thêm dự án' : 'Sửa dự án'">Thêm dự án</h1>
+
+                    <!-- Cùng một form cho thêm và sửa; th:action tự chèn CSRF token -->
+                    <form th:action="${projectId == null} ? @{/me/projects/new} : @{/me/projects/{id}/edit(id=${projectId})}"
+                          th:object="${form}" method="post" novalidate>
+                        <div class="row">
+                            <div class="col-md-7">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Tên dự án <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'" maxlength="200" placeholder="VD: Website quản lý thư viện" autofocus>
+                            <div class="form-text" th:unless="${#fields.hasErrors('name')}"></div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-md-5">
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Vai trò <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{role}" th:classappend="${#fields.hasErrors('role')} ? 'is-invalid'" maxlength="100" placeholder="VD: Backend, Trưởng nhóm">
+                            <div class="form-text" th:unless="${#fields.hasErrors('role')}"></div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-12">
+                        <div class="mb-3">
+                            <label for="techStack" class="form-label">Công nghệ sử dụng <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" th:field="*{techStack}" th:classappend="${#fields.hasErrors('techStack')} ? 'is-invalid'" maxlength="255" placeholder="VD: Spring Boot, MySQL, Thymeleaf">
+                            <div class="form-text" th:unless="${#fields.hasErrors('techStack')}">Cách nhau bằng dấu phẩy</div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('techStack')}" th:errors="*{techStack}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="githubUrl" class="form-label">Link GitHub <span class="text-danger">*</span></label>
+                            <input type="url" class="form-control" th:field="*{githubUrl}" th:classappend="${#fields.hasErrors('githubUrl')} ? 'is-invalid'" maxlength="500" placeholder="https://github.com/ten-ban/ten-du-an">
+                            <div class="form-text" th:unless="${#fields.hasErrors('githubUrl')}"></div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('githubUrl')}" th:errors="*{githubUrl}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="demoUrl" class="form-label">Link demo</label>
+                            <input type="url" class="form-control" th:field="*{demoUrl}" th:classappend="${#fields.hasErrors('demoUrl')} ? 'is-invalid'" maxlength="500" placeholder="https://...">
+                            <div class="form-text" th:unless="${#fields.hasErrors('demoUrl')}">Không bắt buộc</div>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('demoUrl')}" th:errors="*{demoUrl}">Lỗi</div>
+                        </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Mô tả</label>
+                                    <textarea class="form-control" rows="4" th:field="*{description}" maxlength="2000"
+                                              th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                              placeholder="Mục tiêu dự án, phần bạn phụ trách, kết quả đạt được..."></textarea>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Lỗi</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a class="btn btn-outline-secondary" th:href="@{/me/profile#du-an}">Huỷ</a>
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

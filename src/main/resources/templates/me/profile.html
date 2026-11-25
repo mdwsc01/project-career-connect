@@ -32,20 +32,31 @@
 
                 <dt class="col-sm-4 text-muted fw-normal">Ngày sinh</dt>
                 <dd class="col-sm-8"
-                    th:text="${profile.dateOfBirth() != null ? #temporals.format(profile.dateOfBirth(), 'dd/MM/yyyy') : 'Chưa cập nhật'}">01/01/2004</dd>
+                    th:text="${profile.dateOfBirth() != null ? #temporals.format(profile.dateOfBirth(), 'dd/MM/yyyy') : 'Chưa cập nhật'}">
+                    01/01/2004
+                </dd>
 
                 <dt class="col-sm-4 text-muted fw-normal">Số điện thoại</dt>
-                <dd class="col-sm-8" th:text="${profile.phone() != null ? profile.phone() : 'Chưa cập nhật'}">0912345678</dd>
+                <dd class="col-sm-8" th:text="${profile.phone() != null ? profile.phone() : 'Chưa cập nhật'}">
+                    0912345678
+                </dd>
 
                 <dt class="col-sm-4 text-muted fw-normal">Vị trí mong muốn</dt>
-                <dd class="col-sm-8" th:text="${profile.desiredPosition() != null ? profile.desiredPosition() : 'Chưa cập nhật'}">Backend Developer</dd>
+                <dd class="col-sm-8"
+                    th:text="${profile.desiredPosition() != null ? profile.desiredPosition() : 'Chưa cập nhật'}">Backend
+                    Developer
+                </dd>
 
                 <dt class="col-sm-4 text-muted fw-normal">Nơi làm việc mong muốn</dt>
-                <dd class="col-sm-8" th:text="${profile.desiredWorkLocation() != null ? profile.desiredWorkLocation() : 'Chưa cập nhật'}">Hà Nội</dd>
+                <dd class="col-sm-8"
+                    th:text="${profile.desiredWorkLocation() != null ? profile.desiredWorkLocation() : 'Chưa cập nhật'}">
+                    Hà Nội
+                </dd>
 
                 <dt class="col-sm-4 text-muted fw-normal">Giới thiệu bản thân</dt>
                 <dd class="col-sm-8 mb-0 text-prewrap"
-                    th:text="${profile.summary() != null ? profile.summary() : 'Chưa cập nhật'}">...</dd>
+                    th:text="${profile.summary() != null ? profile.summary() : 'Chưa cập nhật'}">...
+                </dd>
             </dl>
         </div>
     </div>
@@ -57,12 +68,14 @@
             <a class="btn btn-sm btn-outline-primary" th:href="@{/me/skills}">Quản lý kỹ năng</a>
         </div>
         <div class="card-body">
-            <p class="text-muted mb-0" th:if="${skillGroups.isEmpty()}">Chưa có kỹ năng nào. Hãy thêm kỹ năng để nhà tuyển dụng tìm thấy bạn.</p>
+            <p class="text-muted mb-0" th:if="${skillGroups.isEmpty()}">Chưa có kỹ năng nào. Hãy thêm kỹ năng để nhà
+                tuyển dụng tìm thấy bạn.</p>
             <div class="row g-3">
                 <div class="col-md-6" th:each="group : ${skillGroups}">
                     <h3 class="h6 text-uppercase text-muted mb-2" th:text="${group.key.label}">Ngôn ngữ</h3>
                     <ul class="list-unstyled mb-0">
-                        <li class="d-flex justify-content-between align-items-center py-1 border-bottom" th:each="s : ${group.value}">
+                        <li class="d-flex justify-content-between align-items-center py-1 border-bottom"
+                            th:each="s : ${group.value}">
                             <span th:text="${s.name()}">Java</span>
                             <span class="skill-dots" th:title="${levels[s.level() - 1].label}">
                                 <span class="dot" th:each="i : ${#numbers.sequence(1, 5)}"
@@ -101,20 +114,89 @@
                     <div class="d-flex align-items-start gap-2">
                         <a class="btn btn-sm btn-outline-secondary" th:href="@{/me/educations/{id}/edit(id=${e.id()})}">Sửa</a>
                         <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                th:attr="data-bs-target='#deleteEducation' + ${e.id()}">Xoá</button>
+                                th:attr="data-bs-target='#deleteEducation' + ${e.id()}">Xoá
+                        </button>
                     </div>
                 </div>
 
                 <!-- Hộp xác nhận xoá -->
                 <div class="modal fade" th:id="'deleteEducation' + ${e.id()}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog">
-                        <form class="modal-content" th:action="@{/me/educations/{id}/delete(id=${e.id()})}" method="post">
+                        <form class="modal-content" th:action="@{/me/educations/{id}/delete(id=${e.id()})}"
+                              method="post">
                             <div class="modal-header">
                                 <h3 class="modal-title h5">Xoá học vấn</h3>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
                             </div>
                             <div class="modal-body">
                                 Bạn có chắc muốn xoá học vấn tại <strong th:text="${e.school()}">trường</strong>?
+                                Thao tác này không thể hoàn tác.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                                <button type="submit" class="btn btn-danger">Xoá</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Dự án cá nhân (task T4E796C) -->
+    <div class="card shadow-sm mb-4" id="du-an">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <h2 class="h5 mb-0">Dự án
+                <span class="small text-muted fw-normal"
+                      th:text="'(' + ${projects.size()} + '/' + ${maxProjects} + ')'">(0/20)</span>
+            </h2>
+            <a th:if="${projects.size() < maxProjects}" class="btn btn-sm btn-outline-primary"
+               th:href="@{/me/projects/new}">+ Thêm dự án</a>
+            <span th:unless="${projects.size() < maxProjects}" class="small text-muted">Đã đạt tối đa</span>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item text-muted py-3" th:if="${projects.isEmpty()}">
+                Chưa có dự án nào. Hãy thêm dự án để chứng minh năng lực thực tế.
+            </li>
+            <li class="list-group-item py-3" th:each="pr : ${projects}">
+                <div class="d-flex flex-wrap justify-content-between gap-2">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold" th:text="${pr.name()}">Tên dự án</div>
+                        <div class="small text-muted mb-1">
+                            <span th:text="${pr.role()}">Backend</span>
+                            <span th:if="${pr.techStack() != null}"> · <span
+                                    th:text="${pr.techStack()}">Spring Boot</span></span>
+                        </div>
+                        <p class="mb-1 text-prewrap" th:if="${pr.description() != null}" th:text="${pr.description()}">
+                            Mô tả</p>
+                        <div class="d-flex flex-wrap gap-3 small">
+                            <!-- Link mở tab mới; noopener noreferrer để trang ngoài không điều khiển được tab này -->
+                            <a th:if="${pr.githubUrl() != null}" th:href="${pr.githubUrl()}"
+                               target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+                            <a th:if="${pr.demoUrl() != null}" th:href="${pr.demoUrl()}"
+                               target="_blank" rel="noopener noreferrer">Demo &#8599;</a>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-2">
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/me/projects/{id}/edit(id=${pr.id()})}">Sửa</a>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                th:attr="data-bs-target='#deleteProject' + ${pr.id()}">Xoá
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade" th:id="'deleteProject' + ${pr.id()}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <form class="modal-content" th:action="@{/me/projects/{id}/delete(id=${pr.id()})}"
+                              method="post">
+                            <div class="modal-header">
+                                <h3 class="modal-title h5">Xoá dự án</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Đóng"></button>
+                            </div>
+                            <div class="modal-body">
+                                Bạn có chắc muốn xoá dự án <strong th:text="${pr.name()}">tên</strong>?
                                 Thao tác này không thể hoàn tác.
                             </div>
                             <div class="modal-footer">

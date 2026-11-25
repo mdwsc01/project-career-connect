@@ -19,8 +19,11 @@ import com.minhduc.careerconnect.dto.SkillLevel;
 import com.minhduc.careerconnect.service.EducationService;
 import com.minhduc.careerconnect.service.MyProfileService;
 import com.minhduc.careerconnect.service.MySkillService;
+import com.minhduc.careerconnect.service.ProjectService;
 
-/** Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình. */
+/**
+ * Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình.
+ */
 @Controller
 @RequestMapping("/me/profile")
 public class MyProfileController {
@@ -31,12 +34,14 @@ public class MyProfileController {
     private final MyProfileService myProfileService;
     private final EducationService educationService;
     private final MySkillService mySkillService;
+    private final ProjectService projectService;
 
     public MyProfileController(MyProfileService myProfileService, EducationService educationService,
-                               MySkillService mySkillService) {
+                               MySkillService mySkillService, ProjectService projectService) {
         this.myProfileService = myProfileService;
         this.educationService = educationService;
         this.mySkillService = mySkillService;
+        this.projectService = projectService;
     }
 
     @GetMapping
@@ -45,6 +50,8 @@ public class MyProfileController {
         model.addAttribute("educations", educationService.getMyEducations(principal.getName()));
         model.addAttribute("skillGroups", mySkillService.getMySkillsGrouped(principal.getName()));
         model.addAttribute("levels", SkillLevel.values());
+        model.addAttribute("projects", projectService.getMyProjects(principal.getName()));
+        model.addAttribute("maxProjects", ProjectService.MAX_PROJECTS);
         return "me/profile";
     }
 
@@ -66,7 +73,9 @@ public class MyProfileController {
         return "redirect:/me/profile";
     }
 
-    /** Ngoài @Past: không trước 1950 và đủ 15 tuổi. */
+    /**
+     * Ngoài @Past: không trước 1950 và đủ 15 tuổi.
+     */
     private void validateBirthDateRange(MyProfileForm form, BindingResult bindingResult) {
         LocalDate dob = form.getDateOfBirth();
         if (dob == null || bindingResult.hasFieldErrors("dateOfBirth")) {
