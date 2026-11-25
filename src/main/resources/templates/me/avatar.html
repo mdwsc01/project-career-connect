@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Ảnh đại diện - Career Connect</title>
+</head>
+<body>
+<section>
+    <a th:href="@{/me/profile}" class="d-inline-block mb-3">&laquo; Quay lại hồ sơ</a>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <h1 class="h4 fw-bold mb-4">Ảnh đại diện</h1>
+
+                    <!-- Ảnh hiện tại -->
+                    <div id="currentAvatar" class="mb-3">
+                        <div th:replace="~{fragments/avatar :: avatar(${profile}, ${avatarInitial}, ${avatarColor}, 140)}"></div>
+                    </div>
+                    <!-- Xem trước ảnh mới (ẩn cho tới khi chọn file) -->
+                    <img id="preview" class="avatar rounded-circle border mb-3 d-none" alt="Xem trước ảnh mới"
+                         style="width:140px;height:140px">
+
+                    <!-- enctype multipart/form-data để gửi file; th:action tự chèn CSRF token -->
+                    <form th:action="@{/me/avatar}" method="post" enctype="multipart/form-data" novalidate
+                          class="text-start">
+                        <label for="file" class="form-label">Chọn ảnh mới</label>
+                        <input type="file" class="form-control" id="file" name="file" accept="image/jpeg,image/png"
+                               th:classappend="${fileError != null} ? 'is-invalid'"
+                               th:attr="data-max-bytes=${maxSizeMb * 1024 * 1024}">
+                        <div class="invalid-feedback" id="fileError" th:text="${fileError}"
+                             th:classappend="${fileError != null} ? 'd-block'">Lỗi file
+                        </div>
+                        <div class="form-text">JPG hoặc PNG, tối đa <span th:text="${maxSizeMb}">2</span>MB.
+                            Ảnh mới sẽ thay ảnh cũ.
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end mt-3">
+                            <a class="btn btn-outline-secondary" th:href="@{/me/profile}">Huỷ</a>
+                            <button type="submit" class="btn btn-primary" id="saveBtn" disabled>Lưu ảnh</button>
+                        </div>
+                    </form>
+
+                    <form th:if="${profile.hasAvatar()}" th:action="@{/me/avatar/delete}" method="post"
+                          class="mt-3 text-start">
+                        <button type="submit" class="btn btn-link text-danger p-0">Bỏ ảnh, dùng chữ cái đầu tên</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Xem trước ảnh trước khi lưu bằng JavaScript thuần (task T4E796E).
+        // Đây chỉ là kiểm tra nhanh cho người dùng; server vẫn kiểm tra lại đầy đủ.
+        (function () {
+            const input = document.getElementById('file');
+            const preview = document.getElementById('preview');
+            const current = document.getElementById('currentAvatar');
+            const error = document.getElementById('fileError');
+            const saveBtn = document.getElementById('saveBtn');
+            const maxBytes = Number(input.dataset.maxBytes);
+            let previewUrl = null;
+
+            function showError(message) {
+                error.textContent = message;
+                error.classList.add('d-block');
+                input.classList.add('is-invalid');
+                saveBtn.disabled = true;
+            }
+
+            function reset() {
+                if (previewUrl) URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+                preview.classList.add('d-none');
+                current.classList.remove('d-none');
+            }
+
+            input.addEventListener('change', function () {
+                reset();
+                error.classList.remove('d-block');
+                input.classList.remove('is-invalid');
+                const file = input.files[0];
+                if (!file) {
+                    saveBtn.disabled = true;
+                    return;
+                }
+                if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                    showError('Ảnh đại diện chỉ nhận file JPG hoặc PNG');
+                    return;
+                }
+                if (file.size > maxBytes) {
+                    showError('Ảnh vượt quá ' + (maxBytes / 1024 / 1024) + 'MB');
+                    return;
+                }
+                previewUrl = URL.createObjectURL(file);
+                preview.src = previewUrl;
+                preview.classList.remove('d-none');
+                current.classList.add('d-none');
+                saveBtn.disabled = false;
+            });
+        })();
+    </script>
+</section>
+</body>
+</html>

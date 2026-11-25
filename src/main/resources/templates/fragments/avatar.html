@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!--
+  Ảnh đại diện dùng chung (task T4E796E).
+  Có ảnh -> hiện ảnh; chưa có -> vòng tròn màu với chữ cái đầu tên.
+  Cách dùng: <div th:replace="~{fragments/avatar :: avatar(${profile}, ${avatarInitial}, ${avatarColor}, 96)}"></div>
+-->
+<th:block th:fragment="avatar(profile, initial, color, size)">
+    <img th:if="${profile.hasAvatar()}" class="avatar rounded-circle border"
+         th:src="@{/files/avatars/{id}(id=${profile.profileId()}, v=${profile.avatarFile()})}"
+         th:alt="'Ảnh đại diện của ' + ${profile.fullName()}"
+         th:style="'width:' + ${size} + 'px;height:' + ${size} + 'px'">
+    <span th:unless="${profile.hasAvatar()}" class="avatar avatar-initial rounded-circle"
+          th:text="${initial}" th:title="${profile.fullName()}"
+          th:style="'width:' + ${size} + 'px;height:' + ${size} + 'px;font-size:' + ${size / 2.4} + 'px;background:' + ${color}">A</span>
+</th:block>
+</body>
+</html>

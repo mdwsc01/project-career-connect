@@ -65,20 +65,29 @@ public class FileStorageService {
     }
 
     /**
-     * Kiểm tra và lưu file vào thư mục con (VD: "certificates").
+     * Kiểm tra và lưu file vào thư mục con (VD: "certificates"): PDF/JPG/PNG, tối đa app.upload.max-size-mb.
      */
     public StoredFile store(MultipartFile file, String subDir) {
+        return store(file, subDir, ALLOWED.keySet(), maxBytes, "Chỉ nhận file PDF, JPG hoặc PNG");
+    }
+
+    /**
+     * Lưu file với danh sách phần mở rộng và dung lượng tối đa riêng
+     * (VD: ảnh đại diện chỉ JPG/PNG, tối đa 2MB - task T4E796E).
+     */
+    public StoredFile store(MultipartFile file, String subDir, Set<String> allowedExtensions, long maxSizeBytes,
+                            String wrongTypeMessage) {
         if (file == null || file.isEmpty()) {
-            throw new InvalidFileException("Vui lòng chọn file minh chứng");
+            throw new InvalidFileException("Vui lòng chọn file");
         }
-        if (file.getSize() > maxBytes) {
-            throw new InvalidFileException("File vượt quá " + getMaxSizeMb() + "MB");
+        if (file.getSize() > maxSizeBytes) {
+            throw new InvalidFileException("File vượt quá " + (maxSizeBytes / 1024 / 1024) + "MB");
         }
         String originalName = Paths.get(file.getOriginalFilename() == null ? "" : file.getOriginalFilename())
                 .getFileName().toString();
         String ext = extensionOf(originalName);
-        if (!ALLOWED.containsKey(ext)) {
-            throw new InvalidFileException("Chỉ nhận file PDF, JPG hoặc PNG");
+        if (!ALLOWED.containsKey(ext) || !allowedExtensions.contains(ext)) {
+            throw new InvalidFileException(wrongTypeMessage);
         }
         String contentType = file.getContentType() == null ? "" : file.getContentType().toLowerCase(Locale.ROOT);
         if (!ALLOWED.get(ext).contains(contentType)) {

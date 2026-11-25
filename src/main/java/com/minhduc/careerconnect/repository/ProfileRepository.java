@@ -11,10 +11,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ProfileRepository {
 
-    /** Thông tin hiển thị ở trang "Hồ sơ của tôi". */
+    /**
+     * Thông tin hiển thị ở trang "Hồ sơ của tôi".
+     */
     public record MyProfile(long userId, long profileId, String email, String fullName, LocalDate dateOfBirth,
                             String phone, String summary, String desiredPosition, String desiredWorkLocation,
-                            String status, boolean isPublic, String slug) {
+                            String status, boolean isPublic, String slug, String avatarFile) {
+
+        public boolean hasAvatar() {
+            return avatarFile != null && !avatarFile.isBlank();
+        }
     }
 
     private final JdbcTemplate jdbcTemplate;
@@ -23,18 +29,22 @@ public class ProfileRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /** Tạo hồ sơ trống: trạng thái nháp, riêng tư (không công khai). */
+    /**
+     * Tạo hồ sơ trống: trạng thái nháp, riêng tư (không công khai).
+     */
     public void insertEmptyProfile(long userId, String slug) {
         jdbcTemplate.update(
                 "INSERT INTO profiles (user_id, slug, status, is_public) VALUES (?, ?, 'DRAFT', FALSE)",
                 userId, slug);
     }
 
-    /** Tìm hồ sơ theo email chủ hồ sơ (người đang đăng nhập). */
+    /**
+     * Tìm hồ sơ theo email chủ hồ sơ (người đang đăng nhập).
+     */
     public Optional<MyProfile> findByOwnerEmail(String email) {
         List<MyProfile> rows = jdbcTemplate.query(
                 "SELECT u.id AS user_id, p.id AS profile_id, u.email, u.full_name, p.date_of_birth, p.phone, "
-                        + "p.summary, p.desired_position, p.desired_work_location, p.status, p.is_public, p.slug "
+                        + "p.summary, p.desired_position, p.desired_work_location, p.status, p.is_public, p.slug, p.avatar_url "
                         + "FROM profiles p JOIN users u ON u.id = p.user_id WHERE u.email = ?",
                 (rs, i) -> {
                     Date dob = rs.getDate("date_of_birth");
@@ -42,13 +52,15 @@ public class ProfileRepository {
                             rs.getString("full_name"), dob == null ? null : dob.toLocalDate(), rs.getString("phone"),
                             rs.getString("summary"), rs.getString("desired_position"),
                             rs.getString("desired_work_location"), rs.getString("status"),
-                            rs.getBoolean("is_public"), rs.getString("slug"));
+                            rs.getBoolean("is_public"), rs.getString("slug"), rs.getString("avatar_url"));
                 },
                 email);
         return rows.stream().findFirst();
     }
 
-    /** Cập nhật thông tin cơ bản của hồ sơ. */
+    /**
+     * Cập nhật thông tin cơ bản của hồ sơ.
+     */
     public void updateBasicInfo(long profileId, LocalDate dateOfBirth, String phone, String summary,
                                 String desiredPosition, String desiredWorkLocation) {
         jdbcTemplate.update(
@@ -58,7 +70,25 @@ public class ProfileRepository {
                 desiredWorkLocation, profileId);
     }
 
-    /** Họ tên nằm ở bảng users. */
+    /**
+     * Lưu tên file ảnh đại diện (null = xoá ảnh) - task T4E796E. Cột avatar_url chứa tên file đã lưu.
+     */
+    public void updateAvatar(long profileId, String avatarFile) {
+        jdbcTemplate.update("UPDATE profiles SET avatar_url = ? WHERE id = ?", avatarFile, profileId);
+    }
+
+    /**
+     * Tên file ảnh đại diện theo id hồ sơ (để phục vụ ảnh).
+     */
+    public Optional<String> findAvatarFile(long profileId) {
+        List<String> rows = jdbcTemplate.queryForList(
+                "SELECT avatar_url FROM profiles WHERE id = ? AND avatar_url IS NOT NULL", String.class, profileId);
+        return rows.stream().findFirst();
+    }
+
+    /**
+     * Họ tên nằm ở bảng users.
+     */
     public void updateOwnerFullName(long userId, String fullName) {
         jdbcTemplate.update("UPDATE users SET full_name = ? WHERE id = ?", fullName, userId);
     }
