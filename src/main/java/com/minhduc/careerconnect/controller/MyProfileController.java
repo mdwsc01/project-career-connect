@@ -16,15 +16,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minhduc.careerconnect.dto.MyProfileForm;
 import com.minhduc.careerconnect.dto.SkillLevel;
+import com.minhduc.careerconnect.repository.ProfileRepository.MyProfile;
+import com.minhduc.careerconnect.service.AvatarService;
 import com.minhduc.careerconnect.service.CertificateService;
 import com.minhduc.careerconnect.service.EducationService;
 import com.minhduc.careerconnect.service.MyProfileService;
 import com.minhduc.careerconnect.service.MySkillService;
 import com.minhduc.careerconnect.service.ProjectService;
 
-/**
- * Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình.
- */
+/** Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình. */
 @Controller
 @RequestMapping("/me/profile")
 public class MyProfileController {
@@ -50,7 +50,10 @@ public class MyProfileController {
 
     @GetMapping
     public String view(Principal principal, Model model) {
-        model.addAttribute("profile", myProfileService.getMyProfile(principal.getName()));
+        MyProfile profile = myProfileService.getMyProfile(principal.getName());
+        model.addAttribute("profile", profile);
+        model.addAttribute("avatarInitial", AvatarService.initialOf(profile.fullName()));
+        model.addAttribute("avatarColor", AvatarService.colorOf(profile.fullName()));
         model.addAttribute("educations", educationService.getMyEducations(principal.getName()));
         model.addAttribute("skillGroups", mySkillService.getMySkillsGrouped(principal.getName()));
         model.addAttribute("levels", SkillLevel.values());
@@ -78,9 +81,7 @@ public class MyProfileController {
         return "redirect:/me/profile";
     }
 
-    /**
-     * Ngoài @Past: không trước 1950 và đủ 15 tuổi.
-     */
+    /** Ngoài @Past: không trước 1950 và đủ 15 tuổi. */
     private void validateBirthDateRange(MyProfileForm form, BindingResult bindingResult) {
         LocalDate dob = form.getDateOfBirth();
         if (dob == null || bindingResult.hasFieldErrors("dateOfBirth")) {

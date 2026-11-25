@@ -15,6 +15,11 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body p-4">
             <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                <!-- Ảnh đại diện (task T4E796E) -->
+                <a th:href="@{/me/avatar}" class="avatar-link me-2" title="Đổi ảnh đại diện">
+                    <div th:replace="~{fragments/avatar :: avatar(${profile}, ${avatarInitial}, ${avatarColor}, 72)}"></div>
+                    <span class="avatar-edit small">Đổi ảnh</span>
+                </a>
                 <h2 class="h4 mb-0" th:text="${profile.fullName()}">Nguyễn Văn An</h2>
                 <th:block th:switch="${profile.status()}">
                     <span th:case="'DRAFT'" class="badge text-bg-secondary">Nháp</span>
