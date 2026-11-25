@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.minhduc.careerconnect.dto.MyProfileForm;
+import com.minhduc.careerconnect.dto.SkillLevel;
 import com.minhduc.careerconnect.service.EducationService;
 import com.minhduc.careerconnect.service.MyProfileService;
+import com.minhduc.careerconnect.service.MySkillService;
 
 /** Trang "Hồ sơ của tôi" - chỉ STUDENT (SecurityConfig chặn /me/**), chỉ hồ sơ của chính mình. */
 @Controller
@@ -28,16 +30,21 @@ public class MyProfileController {
 
     private final MyProfileService myProfileService;
     private final EducationService educationService;
+    private final MySkillService mySkillService;
 
-    public MyProfileController(MyProfileService myProfileService, EducationService educationService) {
+    public MyProfileController(MyProfileService myProfileService, EducationService educationService,
+                               MySkillService mySkillService) {
         this.myProfileService = myProfileService;
         this.educationService = educationService;
+        this.mySkillService = mySkillService;
     }
 
     @GetMapping
     public String view(Principal principal, Model model) {
         model.addAttribute("profile", myProfileService.getMyProfile(principal.getName()));
         model.addAttribute("educations", educationService.getMyEducations(principal.getName()));
+        model.addAttribute("skillGroups", mySkillService.getMySkillsGrouped(principal.getName()));
+        model.addAttribute("levels", SkillLevel.values());
         return "me/profile";
     }
 

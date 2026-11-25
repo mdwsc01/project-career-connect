@@ -27,3 +27,23 @@
 .text-prewrap {
     white-space: pre-line;
 }
+
+/* Mức kỹ năng dạng 5 chấm (task T4E796B) */
+.skill-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+}
+.skill-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bs-gray-300);
+}
+.skill-dots .dot.filled {
+    background: var(--bs-primary);
+}
+.level-option + .level-option {
+    margin-top: 0.35rem;
+}

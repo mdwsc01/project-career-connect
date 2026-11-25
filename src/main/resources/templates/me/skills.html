@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/main :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Kỹ năng của tôi - Career Connect</title>
+</head>
+<body>
+<section>
+    <a th:href="@{/me/profile#ky-nang}" class="d-inline-block mb-3">&laquo; Quay lại hồ sơ</a>
+    <h1 class="h3 fw-bold mb-3">Kỹ năng của tôi</h1>
+
+    <div class="row g-4">
+        <!-- Thêm kỹ năng -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3">Thêm kỹ năng</h2>
+                    <!-- th:action tự chèn CSRF token -->
+                    <form th:action="@{/me/skills}" th:object="${form}" method="post" novalidate>
+                        <div class="mb-3">
+                            <label for="skillName" class="form-label">Kỹ năng</label>
+                            <!-- Ô tìm nhanh: gõ vài chữ, trình duyệt gợi ý từ danh mục -->
+                            <input type="text" class="form-control" th:field="*{skillName}" list="skillOptions"
+                                   autocomplete="off" placeholder="Gõ để tìm, VD: java"
+                                   th:classappend="${#fields.hasErrors('skillName')} ? 'is-invalid'">
+                            <datalist id="skillOptions">
+                                <option th:each="s : ${availableSkills}" th:value="${s.name()}"
+                                        th:label="${s.category().label}">Java
+                                </option>
+                            </datalist>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('skillName')}"
+                                 th:errors="*{skillName}">Lỗi
+                            </div>
+                            <div class="form-text" th:unless="${#fields.hasErrors('skillName')}">
+                                Chỉ chọn được kỹ năng có trong danh mục và chưa có trong hồ sơ
+                                (còn <span th:text="${availableSkills.size()}">0</span> kỹ năng).
+                            </div>
+                        </div>
+
+                        <fieldset class="mb-3">
+                            <legend class="form-label fs-6">Tự đánh giá mức độ</legend>
+                            <div class="form-check level-option" th:each="lv : ${levels}">
+                                <input class="form-check-input" type="radio" th:field="*{level}" th:value="${lv.value}"
+                                       th:classappend="${#fields.hasErrors('level')} ? 'is-invalid'">
+                                <label class="form-check-label" th:for="${#ids.prev('level')}">
+                                    <strong th:text="${lv.value + ' - ' + lv.label}">1 - Mới làm quen</strong>
+                                    <span class="d-block small text-muted" th:text="${lv.description}">Mô tả</span>
+                                </label>
+                            </div>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('level')}"
+                                 th:errors="*{level}">Lỗi
+                            </div>
+                        </fieldset>
+
+                        <button type="submit" class="btn btn-primary w-100">Thêm vào hồ sơ</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kỹ năng đã có, gom theo nhóm -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="h5 mb-3">Kỹ năng trong hồ sơ</h2>
+                    <p class="text-muted mb-0" th:if="${grouped.isEmpty()}">Bạn chưa có kỹ năng nào. Hãy thêm ở khung
+                        bên cạnh.</p>
+
+                    <div class="mb-3" th:each="group : ${grouped}">
+                        <h3 class="h6 text-uppercase text-muted mb-2" th:text="${group.key.label}">Ngôn ngữ</h3>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex flex-wrap align-items-center gap-2"
+                                th:each="s : ${group.value}">
+                                <div class="me-auto">
+                                    <span class="fw-semibold" th:text="${s.name()}">Java</span>
+                                    <span th:if="${s.hidden()}" class="badge text-bg-secondary ms-1"
+                                          title="Quản trị viên đã ẩn kỹ năng này khỏi danh mục, bạn vẫn giữ được">Đã ẩn</span>
+                                </div>
+                                <!-- Đổi mức -->
+                                <form th:action="@{/me/skills/{id}/level(id=${s.skillId()})}" method="post"
+                                      class="d-flex gap-1 m-0">
+                                    <select name="level" class="form-select form-select-sm" aria-label="Mức kỹ năng">
+                                        <option th:each="lv : ${levels}" th:value="${lv.value}"
+                                                th:text="${lv.value + ' - ' + lv.label}"
+                                                th:selected="${lv.value == s.level()}">3 - Khá
+                                        </option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Lưu</button>
+                                </form>
+                                <!-- Bỏ kỹ năng -->
+                                <form th:action="@{/me/skills/{id}/delete(id=${s.skillId()})}" method="post"
+                                      class="m-0">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Bỏ</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
