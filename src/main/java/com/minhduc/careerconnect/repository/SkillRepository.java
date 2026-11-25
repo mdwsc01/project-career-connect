@@ -69,6 +69,23 @@ public class SkillRepository {
         return count != null && count > 0;
     }
 
+    /**
+     * Tìm kỹ năng đang hiện theo tên (không phân biệt hoa thường).
+     */
+    public Optional<Skill> findVisibleByName(String name) {
+        return jdbcTemplate.query(SELECT + " WHERE s.name = ? AND s.is_hidden = FALSE", this::map, name)
+                .stream().findFirst();
+    }
+
+    /**
+     * Kỹ năng đang hiện mà hồ sơ chưa chọn (cho ô tìm nhanh).
+     */
+    public List<Skill> findVisibleNotInProfile(long profileId) {
+        return jdbcTemplate.query(SELECT + " WHERE s.is_hidden = FALSE AND s.id NOT IN "
+                        + "(SELECT ps.skill_id FROM profile_skills ps WHERE ps.profile_id = ?) ORDER BY s.name",
+                this::map, profileId);
+    }
+
     public void insert(String name, SkillCategory category) {
         jdbcTemplate.update("INSERT INTO skills (name, category) VALUES (?, ?)", name, category.name());
     }
@@ -86,7 +103,7 @@ public class SkillRepository {
     }
 
     private Skill map(ResultSet rs, int rowNum) throws SQLException {
-        return new Skill(rs.getLong("id"), rs.getString("name"), SkillCategory.valueOf(rs.getString("category")),
+        return new Skill(rs.getLong("id"), rs.getString("name"), SkillCategory.valueOf(rs.getString("category").toUpperCase()),
                 rs.getBoolean("is_hidden"), rs.getInt("usage_count"));
     }
 }
